@@ -1,6 +1,9 @@
+```mermaid
 sequenceDiagram
     participant browser
     participant server
+    
+    Note right of browser: User writes the new note and clicks save button
     
     # User writes the new note and clicks save button
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
@@ -15,13 +18,17 @@ sequenceDiagram
     # The server sends the html file
     server-->>browser: HTML document
     deactivate server
-
+    
+    Note right of browser: The browser starts executing the HTML that has link to CSS file in the server
+    
     # The browser parse through the html file and finds link to css file which will make the browser another request for the css file
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
     activate server
     # The server sends the css file to the browser
     server-->>browser: the css file
     deactivate server
+    
+    Note right of browser: The browser continues executing the HTML that has another link to JavaScript file in the server
     
     # The browser continues to read the html and encounters another link to javascript file and make another request for that one too
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
@@ -38,3 +45,4 @@ sequenceDiagram
     deactivate server    
 
     Note right of browser: The browser executes the callback function that renders the notes 
+```
