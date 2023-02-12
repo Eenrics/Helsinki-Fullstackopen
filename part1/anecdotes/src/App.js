@@ -1,11 +1,3 @@
-/*
-As soon as internet is avaialbe
-  01 I will search for  create a zero-filled array of the desired length in JS
-  and correct my code for this one
-
-  02
-*/
-
 import { useState } from 'react'
 
 const Quote = ({quote, vote}) => {
@@ -61,7 +53,7 @@ const App = () => {
   const random = () => Math.floor(Math.random() * anecdotes.length)
    
   const [selected, setSelected] = useState(random())
-  const [vote, setVote] = useState([0, 0, 0, 0, 0, 0, 0, 0])
+  const [vote, setVote] = useState(Array(anecdotes.length).fill(0))
 
 
   const handleQuote = () => {
