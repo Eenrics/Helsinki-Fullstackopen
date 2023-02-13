@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
@@ -11,13 +11,13 @@ const App = () => {
   const [filter, setFilter] = useState(/./) 
 
 useEffect(() => {
-  axios.get('http://localhost:3001/persons')
-    .then(res => {
-      setPersons(res.data)
-    })
+  personService.getAll().then(
+    data => setPersons(data)
+  )
 }, [])
 
 const handleNewName = (event) => {
+
   setNewName(
     event.target.value
   )
@@ -35,22 +35,52 @@ const handleFilter = (event) => {
   )
 }
 
+const handleUpdate = (person, newPerson) => {
+  personService.updatePerson(newPerson, person.id)
+    .then(data => {
+      setPersons(
+        persons.map(p => p.id !== person.id ? p : data)
+        )
+      setNewName('')
+      setNewNum('')
+    })   
+}
+
 const handleSubmit = (event) => {
   event.preventDefault()
-  if (persons.find(person => person.name === newName)) {
-    window.alert(`${newName} is already added to phonebook`)
-    return
-  }
+
   let newPerson = {
-    id: persons.length + 1,
     name: newName,
     number: newNum
   }
-  setPersons(
-    persons.concat(newPerson)
-  )
-  setNewName('')
-  setNewNum('')
+
+  let person = persons.find(person => person.name === newName)
+  if (person) {
+    let confirm = window.confirm(`${newName} is already added to phonebook, replace the old number with new one?`)
+    if (confirm) handleUpdate(person, newPerson)
+    return
+  }
+
+  personService.addPerson(newPerson)
+    .then(data => {
+      setPersons(persons.concat(data))
+      setNewName('')
+      setNewNum('')
+    })
+}
+
+
+const handleDelete = (id) => {
+  let per = persons.find(p => p.id === id)
+  const confirm = window.confirm(`Delete ${per.name}?`)
+  if (!confirm) return null
+  personService.deletePerson(id)
+    .then(() => {
+      setPersons(
+        persons.filter(person => id !== person.id)
+      )
+    })
+    .catch(err => alert(err))
 }
 
 return ( 
@@ -66,7 +96,7 @@ return (
       newNum={newNum} 
     />
     <h2>Numbers</h2> 
-    <Persons persons={persons} filter={filter} />
+    <Persons persons={persons} filter={filter} handleDelete={handleDelete} />
   </div> ) 
       }
       
