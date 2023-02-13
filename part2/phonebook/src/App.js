@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
 import personService from './services/persons'
-import Filter from './Filter'
-import PersonForm from './PersonForm'
-import Persons from './Persons'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 const App = () => { 
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('') 
   const [newNum, setNewNum] = useState('') 
   const [filter, setFilter] = useState(/./) 
+  const [message, setMessage] = useState('') 
+  const [messageStatus, setMessageStatus] = useState('') 
 
 useEffect(() => {
   personService.getAll().then(
@@ -43,6 +46,12 @@ const handleUpdate = (person, newPerson) => {
         )
       setNewName('')
       setNewNum('')
+      setMessage(`${data.name} updated.`)
+      setMessageStatus('success')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageStatus(null)
+      }, 5000)
     })   
 }
 
@@ -66,6 +75,12 @@ const handleSubmit = (event) => {
       setPersons(persons.concat(data))
       setNewName('')
       setNewNum('')
+      setMessage(`Added ${data.name}.`)
+      setMessageStatus('success')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageStatus(null)
+      }, 5000)
     })
 }
 
@@ -79,12 +94,29 @@ const handleDelete = (id) => {
       setPersons(
         persons.filter(person => id !== person.id)
       )
+      setMessage(`${per.name} removed!`)
+      setMessageStatus('danger')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageStatus(null)
+      }, 5000)
     })
-    .catch(err => alert(err))
+    .catch(err => {
+      setPersons(
+        persons.filter(person => id !== person.id)
+      )
+      setMessage(`${per.name} has aleady been removed from server!`)
+      setMessageStatus('danger')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageStatus(null)
+      }, 5000)
+    })
 }
 
 return ( 
   <div> 
+    <Notification message={message} type={messageStatus} />
     <h2>Phonebook</h2> 
     <Filter handleChange={handleFilter} />
     <h2>add a new</h2> 
