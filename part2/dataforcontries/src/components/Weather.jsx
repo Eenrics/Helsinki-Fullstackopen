@@ -6,7 +6,7 @@ const Weather = ({weather, country}) => {
         <br />
   
         <p>temprature {weather.temp} kelvin</p>
-        <img src={weather.icon ? `https://openweathermap.org/img/wn/${weather.icon}.png` : null} style={{width: "100px", height: "100px"}} />
+        <img src={weather.icon ? `https://openweathermap.org/img/wn/${weather.icon}.png` : null} className="icon" />
         <p>wind {weather.wind} m/s</p>
   
       </>
