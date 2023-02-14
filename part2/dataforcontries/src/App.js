@@ -53,7 +53,7 @@ useEffect(() => {
     let lon = details[0].latlng[1]
     weatherService.getWeather(lat, lon)
     .then(data => {
-      setWeather({temp: data.current_weather.temperature, wind: data.current_weather.windspeed, icon: (parseInt(String(data.current_weather.weathercode)[0]) + 1)})
+      setWeather({temp: data.main.temp, wind: data.wind.speed, icon: data.weather[0].icon})
     })
   } else {
     setWeather({})
