@@ -1,11 +1,13 @@
 // const { response } = require('express')
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 
 
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 
 morgan.token('body', req => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
@@ -35,7 +37,6 @@ let persons = [
     }
 ]
 
-const PORT = 3001
 
 app.get('/api/persons', (req, res) => {
     res.json(persons)
@@ -43,8 +44,8 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/info', (req, res) => {
     let response = `<p>Phonebook has info for ${persons.length} people</p>
-                    <p>${new Date}</p>`
-
+    <p>${new Date}</p>`
+    
     res.send(response)
 })
 
@@ -69,23 +70,46 @@ app.post('/api/persons', (req, res) => {
         number: person.number
     }
     persons = persons.concat(newPerson)
-
+    
     res.status(201).json(newPerson)
+})
+
+app.put('/api/persons/:id', (req, res) => {
+    let id = parseInt(req.params.id)
+    let person = req.body
+    let perExis = persons.find(per => per.id === id)
+    let perConf = persons.find(per => (per.name === person.name && per.id !== id))
+    
+    if (!perExis) return res.status(400).json({error: "no person found with this id"}).end()
+    else if (perConf) return res.status(400).json({error: "name in use by other id"}).end()
+
+    let newPer = {
+        id,
+        name: person.name,
+        number: person.number
+    }
+    persons = persons.map(per => {
+        if (per.id !== id) return per
+        else return newPer
+    })
+    
+    res.status(200).json(newPer)
 })
 
 app.delete('/api/persons/:id', (req, res) => {
     let id = parseInt(req.params.id)
     persons = persons.filter(per => per.id !== id)
-
+    
     res.status(204).end()
 })
 
 const unknownEndpoint = (req, res) => {
     res.status(404).send({ error: 'unknown endpoint' })
 }
-  
+
 app.use(unknownEndpoint)
 
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
 })
