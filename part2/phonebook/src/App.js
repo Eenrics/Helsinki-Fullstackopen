@@ -53,6 +53,16 @@ const handleUpdate = (person, newPerson) => {
         setMessageStatus(null)
       }, 5000)
     })   
+    .catch(error => {
+      let errmessage = error.response.data.error
+      console.log(errmessage)
+      setMessage(errmessage)
+      setMessageStatus('danger')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageStatus(null)
+      }, 5000)
+    })
 }
 
 const handleSubmit = (event) => {
@@ -77,6 +87,16 @@ const handleSubmit = (event) => {
       setNewNum('')
       setMessage(`Added ${data.name}.`)
       setMessageStatus('success')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageStatus(null)
+      }, 5000)
+    })
+    .catch(error => {
+      let errmessage = error.response.data.error
+      console.log(errmessage)
+      setMessage(errmessage)
+      setMessageStatus('danger')
       setTimeout(() => {
         setMessage(null)
         setMessageStatus(null)

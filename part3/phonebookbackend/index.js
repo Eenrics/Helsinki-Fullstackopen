@@ -43,36 +43,30 @@ app.get('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     let person = req.body
     let perExis = Phone.find({name: person.name}).then(data => console.log(data, typeof data))
 
-    if (!person.name || !person.number) return res.status(400).json({error: "name or number is missing"}).end()
-    else if (perExis.length) return res.status(409).json({error: "name must be unique"}).end()
+    if (perExis.length) return res.status(409).json({error: "name must be unique"}).end()
 
     let phone = new Phone({name: person.name, number: person.number})
     phone.save()
       .then(response => {
         res.json(response)
       })
-      .catch(error => {
-        console.log("error saving data to mongodb", error.message)
-      })
+      .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-    person = req.body
+    const { name, number } = req.body
 
-    let newPer = {
-        name: person.name,
-        number: person.number
-    }
+    let newPer = {name, number}
 
-    Phone.findByIdAndUpdate(req.params.id, newPer, { new: true})
-        .then(updatedPhon => {
-          res.status(200).json(updatedPhon)
-        })
-        .catch(err => next(err))
+    Phone.findByIdAndUpdate(req.params.id, newPer, { new: true, runValidators: true, context: 'query' })
+      .then(updatedPhon => {
+        res.status(200).json(updatedPhon)
+      })
+      .catch(err => next(err))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
@@ -89,14 +83,16 @@ const unknownEndpoint = (req, res) => {
 
 app.use(unknownEndpoint)
 
-const errorHandler = (err, req, res, next) => {
-    console.log(err.message)
+const errorHandler = (error, req, res, next) => {
+    console.log(error.message)
 
-    if (err.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id' })
+    if (error.name === 'CastError') {
+        return res.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: error.message })
     }
 
-    next(err)
+    next(error)
 }
 
 app.use(errorHandler)
