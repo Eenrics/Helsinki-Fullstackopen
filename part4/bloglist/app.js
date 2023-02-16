@@ -7,6 +7,7 @@ const { info, error } = require('./utils/logger')
 const blogRouter = require('./controllers/blogs')
 const config = require('./utils/config')
 
+mongoose.set('strictQuery', false)
 mongoose.connect(config.url)
     .then(res => info('connected to db'))
 
