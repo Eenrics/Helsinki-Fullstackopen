@@ -99,4 +99,51 @@ button.togglable {
 
 button.blogdel {
   background-color: pink;
+  display: inline;
+}
+
+button.like {
+  background-color: rgb(250, 250, 91);
+  display: inline;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+button.like:hover > .icon {
+  animation: like 2s infinite;
+  display: inline-block;
+}
+
+.icon::after {
+  content: "❤️";
+}
+
+@keyframes like {
+  0% {
+    transform: scale(1.5);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+.views {
+  background-color: rgb(233, 233, 233);
+  padding: 1rem;
+  border-radius: 20px;
+}
+
+.title {
+  color: black;
+  text-shadow: 2px 2px aquamarine;
+  padding-right: 10px;
+}
+
+.user {
+  color: rgb(17, 17, 186);
+  padding-right: 10px;
+  text-transform: capitalize;
 }

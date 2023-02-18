@@ -1,6 +1,15 @@
-const BlogForm = ({handleBlog, form, setForm}) => {
+import { useState } from "react";
+
+const BlogForm = ({handleBlog}) => {
+    const [form, setForm] = useState({title: "", author: "", url: ""})
+
+    const createBlog = (event) => {
+        event.preventDefault()
+        handleBlog(form)
+    }
+
     return ( 
-        <form onSubmit={handleBlog}>
+        <form onSubmit={createBlog}>
         <h2>Create new</h2>
         Title: <input name='title' value={form.title} onChange={(e) => setForm({...form, title: e.target.value})} placeholder="title" type="text"/><br/>
         Author: <input name='author' value={form.author} onChange={(e) => setForm({...form, author: e.target.value})} placeholder="author" type="text"/><br/>

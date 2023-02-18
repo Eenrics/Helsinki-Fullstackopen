@@ -15,13 +15,12 @@ const App = () => {
   const [notification, setNotification] = useState({message: '', type: ''})
   const [toggle, setToggle] = useState(true)
   const [signup, setSignup] = useState({name: "", username: "", passowrd: "", confpassword: ""})
-  const [form, setForm] = useState({title: "", author: "", url: ""})
 
   const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>{
-      setBlogs( blogs )
+      setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
     }
     )  
   }, [blogs])
@@ -62,8 +61,7 @@ const App = () => {
     })
   }
 
-  const handleBlog = (event) => {
-    event.preventDefault()
+  const handleBlog = (form) => {
     if (!(form.title && form.author && form.url)) {
       setNotification({message: "Please provide title author and url for the blog", type: "danger"})
       setTimeout(() => {
@@ -78,7 +76,6 @@ const App = () => {
       setTimeout(() => {
         setNotification({message: ""})
       }, 5000)
-      setForm({title: "", author: "", url: ""})
       blogFormRef.current.toggleVisibility()
     })
     .catch(error => {
@@ -99,7 +96,29 @@ const App = () => {
       setTimeout(() => {
         setNotification({message: ""})
       }, 5000)
-      setForm({title: "", author: "", url: ""})
+    })
+    .catch(error => {
+      setNotification({message: "Something went wrong", type: "danger"})
+      setTimeout(() => {
+        setNotification({message: ""})
+      }, 5000)
+    })
+  }
+
+  const handleLike = (id, likes) => {
+    blogService.updateBlog(id, {likes})
+    .then(response => {
+      setBlogs(blogs.map(blog => {
+        if (blog.id === id) {
+          return {...blog, likes}
+        } else {
+          return blog
+        }
+      }))
+      setNotification({message: `you liked it successfully`, type: "success"})
+      setTimeout(() => {
+        setNotification({message: ""})
+      }, 5000)
     })
     .catch(error => {
       setNotification({message: "Something went wrong", type: "danger"})
@@ -195,11 +214,11 @@ const bloglists = <>
     <h2>blogs</h2>
     <Togglable buttonLabel="write a blog" ref={blogFormRef}>
       <BlogForm 
-      handleBlog={handleBlog} form={form} setForm={setForm} />
+      handleBlog={handleBlog} />
       <br/>
     </Togglable>
     {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} username={user.username} handleDelete={handleDelete}/>
+        <Blog key={blog.id} blog={blog} username={user.username} handleDelete={handleDelete} handleLike={handleLike}/>
       )}
     </>
 

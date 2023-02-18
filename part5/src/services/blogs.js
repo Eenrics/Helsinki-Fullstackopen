@@ -33,11 +33,11 @@ const getAll = async () => {
   return response.data
 }
 
-const updateBlog = async (blogObject) => {
+const updateBlog = async (blogId, blogObject) => {
   const config = {
     headers: { Authorization: token },
   }
-  const response = await axios.put(baseUrl, blogObject, config)
+  const response = await axios.put(`${baseUrl}/${blogId}`, blogObject, config)
   return response.data
 }
 
