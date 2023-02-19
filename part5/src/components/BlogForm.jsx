@@ -5,6 +5,7 @@ const BlogForm = ({handleBlog}) => {
 
     const createBlog = (event) => {
         event.preventDefault()
+        setForm({title: "", author: "", url: ""})
         handleBlog(form)
     }
 

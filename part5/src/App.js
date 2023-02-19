@@ -15,6 +15,7 @@ const App = () => {
   const [notification, setNotification] = useState({message: '', type: ''})
   const [toggle, setToggle] = useState(true)
   const [signup, setSignup] = useState({name: "", username: "", passowrd: "", confpassword: ""})
+  const [update, setupdate] = useState(null)
 
   const blogFormRef = useRef()
 
@@ -23,7 +24,7 @@ const App = () => {
       setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
     }
     )  
-  }, [blogs])
+  }, [update])
 
   useEffect(() => {
     let localstorage = window.localStorage.getItem('blogappuser')
@@ -71,7 +72,7 @@ const App = () => {
     }
     blogService.createBlog(form)
     .then(response => {
-      setBlogs(blogs.concat(response))
+      setupdate(!update)
       setNotification({message: `Blog '${form.title}' added successfully`, type: "success"})
       setTimeout(() => {
         setNotification({message: ""})

@@ -10,7 +10,7 @@
   animation: not 5.1s;
   transition: 1s;
   overflow: hidden;
-  position: absolute;
+  position: fixed;
   box-shadow: 0 0 5px 1px darkgray;
   left: 10%;
 }
