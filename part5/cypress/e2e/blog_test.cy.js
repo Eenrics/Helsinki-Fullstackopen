@@ -64,6 +64,7 @@ describe('Blog page', function() {
         cy.get('#password').type('cypressfakepass')
         cy.get('.login-btn').click()
         cy.get('.danger').contains('Incorrect username or password')
+        cy.get('.danger').should('have.css', 'color', 'rgb(0, 0, 0)')
         cy.get('html').should('not.contain', 'Cypress Test')
       })
 
@@ -93,6 +94,52 @@ describe('Blog page', function() {
             cy.contains('Url').parents().contains('www.cypress.com')
             cy.contains('Likes').parents().contains('0')
           })
+
+          it('user can click on like button', function() {
+            cy.get('.viewhide:first').click()
+            cy.get('.like').click()
+            cy.contains('Likes').parents().contains('1')
+          })
+
+          it('user can delete the blog it created', function() {
+            cy.get('.blogdel').click()
+            cy.get('.success').should('have.css', 'color', 'rgb(0, 0, 0)')
+              .and('contain', 'Blog \'Cypress new blog\' deleted successfully')
+          })
+
+          describe('Blog delete button is not visible to non creators', function() {
+            beforeEach(function() {
+              window.localStorage.clear()
+              cy.signup({ username: 'othertestuser', name: 'Other Test', password: 'other1234' })
+              cy.login({ username: 'othertestuser', password: 'other1234' })
+            })
+
+            it('user can not view delete button', function() {
+              cy.get('.blogdel').should('not.exist')
+            })
+
+            it('blogs are ordered using like', function() {
+              cy.addblog({ title: 'Other Test new blog', author: 'Other Test', url: 'www.othertest.com' })
+              cy.contains('Other Test new blog Other Test').find('.viewhide').as('viewbtn')
+              cy.get('@viewbtn').click()
+              cy.contains('Other Test new blog Other Test').contains('Likes: ').parent().find('button').as('likebtn')
+              cy.get('@likebtn').click()
+              cy.visit('')
+              cy.get('.bloglist:first').should('contain', 'Other Test new blog Other Test')
+              cy.addblog({ title: 'Third new test blog', author: 'Other Test', url: 'www.othertest.com' })
+              cy.get('@viewbtn').click()
+              cy.get('@likebtn').click()
+              cy.contains('Third new test blog Other Test').find('.viewhide').as('secviewbtn')
+              cy.get('@secviewbtn').click()
+              cy.contains('Third new test blog Other Test').contains('Likes: ').parent().find('button').as('secbtn')
+              cy.get('@secbtn').click()
+              cy.visit('')
+              cy.get('.bloglist').eq(0).should('contain', 'Other Test new blog Other Test')
+              cy.get('.bloglist').eq(1).should('contain', 'Third new test blog Other Test')
+              cy.get('.bloglist').eq(2).should('contain', 'Cypress new blog Cypress')
+            })
+          })
+
         })
 
       })
