@@ -27,7 +27,7 @@ const Signup = async (rawUserObject) => {
   return response.data
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
+// eslint-disable-next-line
 const getAll = async () => {
   const response = await axios.get(baseUrl)
   return response.data
@@ -57,8 +57,8 @@ const deleteBlog = async (blogId) => {
   return response.data
 }
 
-let blogService = {getAll, updateBlog, deleteBlog, createBlog }
-let userService = {Login, Signup, }
+let blogService = { getAll, updateBlog, deleteBlog, createBlog }
+let userService = { Login, Signup, }
 
-// eslint-disable-next-line import/no-anonymous-default-export
+// eslint-disable-next-line
 export { blogService, userService, setToken}
