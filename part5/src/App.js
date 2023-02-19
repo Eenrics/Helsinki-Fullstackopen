@@ -207,7 +207,7 @@ const App = () => {
 
   const logoutform = <>
     <span className='userlogo'>{user.name} logged in</span>
-    <button onClick={handleLogout}>logout</button>
+    <button className='logout-btn' onClick={handleLogout}>logout</button>
     <hr/>
   </>
 

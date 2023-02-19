@@ -22,7 +22,7 @@ const Blog = ({ blog, username, handleDelete, handleLike }) => {
           <button className='blogdel' onClick={() => handleDelete(blog.id, blog.title)}>delete</button> :
           null
       }
-      <button onClick={() => SetinTog(!innerToogle)}>{innerToogle ? 'hide' : 'view'}</button>
+      <button className='viewhide' onClick={() => SetinTog(!innerToogle)}>{innerToogle ? 'hide' : 'view'}</button>
 
       {
         innerToogle ? detail : null
