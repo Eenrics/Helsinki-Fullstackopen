@@ -39,6 +39,7 @@ describe('Blog page', function() {
       cy.get('.danger').contains('Passwords are unmatched')
       cy.contains('Cypress Test').should('not.exist')
     })
+
   })
 
   describe('Login and Blog posting', function() {
@@ -138,6 +139,7 @@ describe('Blog page', function() {
               cy.get('.bloglist').eq(1).should('contain', 'Third new test blog Other Test')
               cy.get('.bloglist').eq(2).should('contain', 'Cypress new blog Cypress')
             })
+
           })
 
         })
