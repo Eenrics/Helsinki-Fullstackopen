@@ -1,5 +1,3 @@
-import { createSlice } from "@reduxjs/toolkit"
-
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -8,6 +6,9 @@ const anecdotesAtStart = [
   'Premature optimization is the root of all evil.',
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
+
+const VOTE = "VOTE"
+const CREATE = "CREATE"
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
@@ -21,22 +22,27 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-const anecdoteSlice = createSlice({
-  name: 'anecdotes',
-  initialState,
-  reducers: {
-    createQuote(state, action){
-      const content = action.payload
+const anecdoteReducer = (state = initialState, action) => {
+  switch(action.type) {
+    case VOTE:
+      const id = action.payload.id
+      let objToChange = state.find(a => a.id === id)
+      let objChanged = {...objToChange, votes: objToChange.votes + 1}
+      return state.map(a => a.id !== id ? a : objChanged)
+    case CREATE:
+      const content = action.payload.content
       return state.concat(asObject(content))
-    },
-    voteForQuote(state, action){
-      const id = action.payload
-      const anecdoteToChange = state.find(anecdote => anecdote.id === id)
-      const changedAnecdote = {...anecdoteToChange, votes: anecdoteToChange.votes + 1}
-      return state.map(anecdote => anecdote.id !== id ? anecdote : changedAnecdote)
-    }
+    default:
+      return state
   }
-})
+}
 
-export const { createQuote, voteForQuote } = anecdoteSlice.actions
-export default anecdoteSlice.reducer
+export const voteForQuote = (id) => {
+  return {type: VOTE, payload: {id}}
+}
+
+export const createQuote = (content) => {
+  return {type: CREATE, payload: {content}}
+}
+
+export default anecdoteReducer

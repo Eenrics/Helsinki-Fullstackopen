@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { createQuote } from "../reducers/anecdoteReducer";
+import { createNotification, deleteNotification } from '../reducers/notificationReducer'
 
 const AnecdoteForm = () => {
 
@@ -11,6 +12,10 @@ const AnecdoteForm = () => {
         if (!content) return
         dispatch(createQuote(content))
         event.target.quote.value = ''
+        dispatch(createNotification(`you created '${content}'`))
+        setTimeout(() => {
+            dispatch(deleteNotification())
+        }, 5000)
       }
 
     return ( 
@@ -18,7 +23,7 @@ const AnecdoteForm = () => {
             <h2>create new</h2>
             <form onSubmit={create}>
             <div><input name='quote'/></div>
-            <button type='submit'>create</button>
+            <button>create</button>
             </form>
         </>
      );
