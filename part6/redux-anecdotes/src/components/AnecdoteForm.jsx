@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux";
 import { createQuote } from "../reducers/anecdoteReducer";
 import { createNotification, deleteNotification } from '../reducers/notificationReducer'
-import anecdoteServices from '../services/anecdotes'
 
 const AnecdoteForm = () => {
 
@@ -11,10 +10,8 @@ const AnecdoteForm = () => {
         event.preventDefault()
         let content = event.target.quote.value
         if (!content) return
-        let response = await anecdoteServices.createNew(content)
-        console.log(response)
-        dispatch(createQuote(response))
         event.target.quote.value = ''
+        dispatch(createQuote(content))
         dispatch(createNotification(`you created '${content}'`))
         setTimeout(() => {
             dispatch(deleteNotification())

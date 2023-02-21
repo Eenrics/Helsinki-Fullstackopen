@@ -14,7 +14,8 @@ const createNew = async (content) => {
 }
 
 const updateQuote = async (object) => {
-    const response = await axios.put(`${baseUrl}/${object.id}`, object)
+    let response = await axios.put(`${baseUrl}/${object.id}`, object)
+    return response.data
 }
 
 export default { getAll, createNew, updateQuote }
