@@ -47,7 +47,7 @@ describe("anecdoteReducer", () => {
         
         const action = {
             type: 'anecdotes/voteForQuote',
-            payload: initialState[0].id
+            payload: {...initialState[0], votes: initialState[0].votes + 1}
         }
         const state = initialState
 
@@ -63,10 +63,12 @@ describe("anecdoteReducer", () => {
     })
 
     test("anecdote can be added with right action", () => {
+
+        const payload = {content: 'I love learning at helsinki', votes: 0, id: 213}
         
         const action = {
-            type: 'anecdotes/createQuote',
-            payload: 'I love learning at helsinki'
+            type: 'anecdotes/appendQuote',
+            payload
         }
         const state = initialState
 
