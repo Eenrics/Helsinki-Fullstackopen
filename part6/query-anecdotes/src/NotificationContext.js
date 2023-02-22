@@ -43,4 +43,14 @@ export const useNotificationDispatch = () => {
     return notificationAndDispatch[1]
 }
 
+export const useNot = () => {
+    const notificationAndDispatch = useContext(NotificationContext)
+    return (msg, sec) => {
+        notificationAndDispatch[1](setNotification(msg))
+        setTimeout(() => {
+            notificationAndDispatch[1](clearNotification())
+        }, sec*1000)
+    }
+}
+
 export default NotificationContext
